@@ -1,6 +1,8 @@
 /**
  * Created by user on 10/05/2017.
  */
+import Form.Form2;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -75,10 +77,15 @@ public class FormLogin extends JFrame implements ActionListener {
             rs = stat.executeQuery(sql);
             if(rs.next()){
                 if(txtusername.getText().equals(rs.getString("username")) && txtpassword.getText().equals(rs.getString("password"))){
-                    JOptionPane.showMessageDialog(null, "berhasil login");
+                    FormMenu a = new FormMenu(); //mggil Form2 dan menjadikannya variabel a
+                    a.setVisible(true); //
                 }
             }else{
                 JOptionPane.showMessageDialog(null, "username atau password salah");
+            }
+            if (evt.getSource() == btnExit){
+                JOptionPane.showMessageDialog(null, "Anda akan keluar!");
+                System.exit(0);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
