@@ -1,5 +1,8 @@
 
 
+import FormKeluar.FormKeluar;
+import FormMasuk.FormMasuk;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -52,8 +55,11 @@ public class FormMenu extends JFrame implements ActionListener {
         con = DB.con;
         stat = DB.stm;
 
-        setSize (310,200);
+        setSize (250,200);
         setVisible (true);
+        setLocationRelativeTo(null);
+        setLayout(null);
+
     }
 
     public static void main(String[] args) {

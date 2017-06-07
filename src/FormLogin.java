@@ -1,7 +1,6 @@
 /**
  * Created by user on 10/05/2017.
  */
-import Form.Form2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +12,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
-/**
- * Created by user on 13/05/2017.
- */
+
 public class FormLogin extends JFrame implements ActionListener {
     Connection con;
     Statement stat;
@@ -62,9 +59,13 @@ public class FormLogin extends JFrame implements ActionListener {
         con = DB.con;
         stat = DB.stm;
 
+
         setSize (310,200);
         setVisible (true);
+        setLocationRelativeTo(null);
+        setLayout(null);
     }
+
 
     public static void main(String[] args) {
         FormLogin test = new FormLogin();
@@ -73,7 +74,7 @@ public class FormLogin extends JFrame implements ActionListener {
 
     public void actionPerformed (ActionEvent evt){
         try {
-            sql = "SELECT * FROM login WHERE username='"+txtusername.getText()+"' AND password='"+txtpassword.getText()+"'";
+            sql = "SELECT * FROM admin WHERE username='"+txtusername.getText()+"' AND password='"+txtpassword.getText()+"'";
             rs = stat.executeQuery(sql);
             if(rs.next()){
                 if(txtusername.getText().equals(rs.getString("username")) && txtpassword.getText().equals(rs.getString("password"))){
