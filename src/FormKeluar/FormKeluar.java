@@ -1,24 +1,20 @@
 package FormKeluar;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
-/**
- * Created by user on 07/06/2017.
- */
-public class FormKeluar extends JFrame implements ActionListener  {
-
-
-
+public class FormKeluar extends JFrame implements ActionListener {
 
     Connection con;
     Statement stat;
@@ -125,7 +121,6 @@ public class FormKeluar extends JFrame implements ActionListener  {
         setSize (250,470);
         setVisible (true);
         setLocationRelativeTo(null);
-        setLayout(null);
     }
 
     private void initComponents() {
@@ -161,6 +156,47 @@ public class FormKeluar extends JFrame implements ActionListener  {
 
 
 
+    public void updatekeluar(){
+
+
+        try {
+
+            String sql = "update parkirmasuk set jam_keluar=NOW(),durasi=TIME_FORMAT(`jam_keluar`,'%H')-TIME_FORMAT(`jam_masuk`,'%H'),tarif=3000 where plat_no='"+cari.getText()+"'";
+
+
+            Statement stt = con.createStatement();
+            stt.executeUpdate(sql);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    public void tampilkeluar() {
+
+
+        try {
+            Statement stt = con.createStatement();
+            String sql = "SELECT   jam_keluar, durasi,tarif FROM parkirmasuk where plat_no='"+cari.getText()+"'";
+            ResultSet res = stt.executeQuery(sql);
+
+            while(res.next()){
+                Object[] ob = new Object[3];
+                ob[0]=  res.getString(1);
+                ob[1]= res.getString(2);
+
+
+
+                jam_keluar.setText((String) ob[0]);
+                durasi.setText((String) ob[1]);
+
+            }
+            res.close(); stt.close();
+        }  catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public void tampiltarif(){
         try {
@@ -184,7 +220,42 @@ public class FormKeluar extends JFrame implements ActionListener  {
     }
 
 
+    public void total(){
+        try {
 
+            String sql = "update parkirmasuk set total=durasi*3000 where plat_no='"+cari.getText()+"'";
+
+
+            Statement stt = con.createStatement();
+            stt.executeUpdate(sql);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+
+    }
+    public void tampiltotal(){
+        try {
+
+            Statement stt = con.createStatement();
+            String sql = "SELECT   total FROM parkirmasuk where plat_no='"+cari.getText()+"'";
+            ResultSet res = stt.executeQuery(sql);
+
+            while(res.next()){
+                Object[] ob = new Object[1];
+                ob[0]=  res.getString(1);
+
+
+                total.setText((String) ob[0]);
+
+            }
+            res.close(); stt.close();
+        }  catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 
 
@@ -192,17 +263,59 @@ public class FormKeluar extends JFrame implements ActionListener  {
     public void actionPerformed (ActionEvent evt) {
         if (!"".equals(cari.getText())) {
 
-
             tampil();
             tampiltarif();
 
 
             try {
                 if (evt.getSource() == btnKeluar) {
+                    updatekeluar();
+                    tampilkeluar();
+
+                    total();
+                    tampiltotal();
+
 
                 }
                 if (evt.getSource() == btnPrint) {
+                    try {
+                        String str = "				Karcis Kendaraan Anda :\n" +
+                                "====================================================================\n\n\n\n" +
+                                "\nNo.Plat   			:  " + cari.getText() + "\n" +
+                                "\nJenis Kendaraan		:  " + jenis.getText() + "\n" +
+                                "\nTarif              	:  " + perjam.getText() + "\n" +
+                                "\nTotal	            :  " + total.getText() + "\n" +
 
+
+                                "Terimakasih :)" +
+                                " Semoga selamat sampai tujuan. ";
+
+                        File newTextFile = new File("Karcis - " + cari.getText() + ".txt");
+
+
+                        //File file = fc.getSelectedFile();
+                        //BufferedImage bImage = ImageIO.read(file);
+
+
+                        //ImageIO.write(bImage, "png", new File("Karcis - "+cari.getText()+".png"));
+                        FileWriter fw = new FileWriter(newTextFile);
+                        fw.write(str);
+                        fw.close();
+
+                        JOptionPane.showMessageDialog(null, "Karcis Anda Sudah dicetak", "Terima kasih", JOptionPane.PLAIN_MESSAGE);
+                        cari.setText("");
+                        jenis.setText("");
+                        tgl_masuk.setText("");
+                        jam_keluar.setText("");
+                        durasi.setText("");
+                        jam_masuk.setText("");
+                        perjam.setText("");
+                        total.setText("");
+
+
+                    } catch (IOException iox) {
+                        iox.printStackTrace();
+                    }
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Data Gagal Ditampilkan");
@@ -216,5 +329,4 @@ public class FormKeluar extends JFrame implements ActionListener  {
     }
 
 }//if
-
 
