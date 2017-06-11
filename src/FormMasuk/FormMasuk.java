@@ -4,16 +4,17 @@ package FormMasuk;
  * Created by user on 07/06/2017.
  */
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-
-import javax.swing.JOptionPane;
 
 
 public class FormMasuk extends JFrame implements ActionListener {
@@ -22,8 +23,8 @@ public class FormMasuk extends JFrame implements ActionListener {
     ResultSet rs;
     String sql;
     koneksi db;
-    private JLabel label1, label2,label3,label4,label5;
-    private JTextField no_tiket,plat_no,tarif;
+    private JLabel  label2,label3;
+    private JTextField plat_no;
     private JComboBox comboBox1;
 
     private JButton btnSimpan;
@@ -38,20 +39,25 @@ public class FormMasuk extends JFrame implements ActionListener {
         label2 = new JLabel ("Plat.No : ");
         label3 = new JLabel ("Jenis Kendaraan : ");
 
+        label2.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label3.setFont(new Font("Comic Sans", Font.ITALIC, 14));
 
 
+        plat_no = new JTextField(20);
+        plat_no.setFont(new Font("Comic Sans", Font.BOLD, 14));
+        plat_no.setForeground(Color.blue);
 
-
-
-        plat_no = new JTextField(7);
         comboBox1 = new JComboBox();
         comboBox1 .addItem("Mobil");
         comboBox1 .addItem("Motor");
+        comboBox1.setFont(new Font("comic",Font.TYPE1_FONT,14));
 
 
-
-
-        btnSimpan = new JButton ("Simpan");
+        ImageIcon iconsimpan = new ImageIcon("gambar/simpan.png");
+        Image img = iconsimpan.getImage() ;
+        Image newimg = img.getScaledInstance( 30, 20,  java.awt.Image.SCALE_SMOOTH ) ;
+        iconsimpan= new ImageIcon( newimg );
+        btnSimpan = new JButton ("Simpan",iconsimpan);
         btnSimpan.addActionListener(this);
 
         db =new koneksi();
@@ -76,7 +82,7 @@ public class FormMasuk extends JFrame implements ActionListener {
         initComponents();
 
 
-        setSize (250,150);
+        setSize (310,200);
         setVisible (true);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -85,14 +91,30 @@ public class FormMasuk extends JFrame implements ActionListener {
     private void initComponents() {
     }
 
+    public void playsound(String soundName)
+    {
+        try
+        {
+            AudioInputStream audioInputStream= AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+            Clip clip=AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
 
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Error with Playing sound.");
+            ex.printStackTrace();
+        }
+    }
 
 
     public void actionPerformed (ActionEvent evt){
 
         if( !"".equals(plat_no.getText())){
             try {
-
+                playsound("gambar/button.wav");
                 stat=con.createStatement();
                 String sql="INSERT INTO parkirmasuk(plat_no,jenis,tgl_masuk,jam_masuk) VALUES ('"+plat_no.getText()+"','"+ comboBox1.getSelectedItem() +"',NOW(),NOW());";
                 stat.executeUpdate(sql);

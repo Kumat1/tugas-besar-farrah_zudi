@@ -1,18 +1,20 @@
 package FormKeluar;
 
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class FormKeluar extends JFrame implements ActionListener {
 
@@ -23,7 +25,7 @@ public class FormKeluar extends JFrame implements ActionListener {
     FormMasuk.koneksi db;
     private JLabel label1, label2,label3,label4,label5,label6,label7,label8;
     private JTextField cari,jenis,tgl_masuk,jam_keluar,durasi,jam_masuk,perjam,total;
-    private JTextArea txt1;
+
 
 
     private JButton btnCari,btnPrint,btnKeluar;
@@ -45,33 +47,66 @@ public class FormKeluar extends JFrame implements ActionListener {
         label7 = new JLabel ("Jam Masuk: ");
         label8 = new JLabel ("Total: ");
 
+        label1.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label2.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label3.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label4.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label5.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label6.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label7.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+        label8.setFont(new Font("Comic Sans", Font.ITALIC, 14));
+
+
 
 
 
         cari = new JTextField(20);
+        cari.setForeground(Color.blue);
+        cari.setFont(new Font("Comic Sans", Font.BOLD, 14));
         jenis = new JTextField(20);
-        jenis.setBackground (Color.gray);
+        jenis.setBackground (Color.LIGHT_GRAY);
+        jenis.setForeground(Color.RED);
         tgl_masuk = new JTextField(20);
-        tgl_masuk.setBackground (Color.gray);
+        tgl_masuk.setBackground (Color.LIGHT_GRAY);
+        tgl_masuk.setForeground(Color.RED);
         jam_keluar = new JTextField(20);
-        jam_keluar.setBackground (Color.gray);
+        jam_keluar.setBackground (Color.LIGHT_GRAY);
+        jam_keluar.setForeground(Color.RED);
         durasi = new JTextField(20);
-        durasi.setBackground (Color.gray);
+        durasi.setBackground (Color.LIGHT_GRAY);
+        durasi.setForeground(Color.RED);
         perjam = new JTextField(20);
-        perjam.setBackground (Color.gray);
+        perjam.setBackground(Color.LIGHT_GRAY);
+        perjam.setForeground(Color.RED);
         jam_masuk = new JTextField(20);
-        jam_masuk.setBackground (Color.gray);
+        jam_masuk.setBackground (Color.LIGHT_GRAY);
+        jam_masuk.setForeground(Color.RED);
         total = new JTextField(20);
-        total.setBackground (Color.gray);
+        total.setBackground (Color.LIGHT_GRAY);
+        total.setForeground(Color.RED);
 
-
-        btnCari= new JButton ("Cari");
+        ImageIcon iconcari = new ImageIcon("gambar/cari.png");
+        Image img = iconcari.getImage() ;
+        Image newimg = img.getScaledInstance( 30, 20,  java.awt.Image.SCALE_SMOOTH ) ;
+        iconcari = new ImageIcon( newimg );
+        btnCari= new JButton ("Cari",iconcari);
         btnCari.addActionListener(this);
-        btnPrint = new JButton ("Print");
-        btnPrint.addActionListener(this);
-        btnKeluar = new JButton ("Keluar");
-        btnKeluar.addActionListener(this);
 
+
+        ImageIcon iconprint = new ImageIcon("gambar/print.png");
+        Image img2 = iconprint.getImage() ;
+        Image newimg2 = img2.getScaledInstance( 30, 20,  java.awt.Image.SCALE_SMOOTH ) ;
+        iconprint = new ImageIcon( newimg2 );
+        btnPrint = new JButton ("Print",iconprint);
+        btnPrint.addActionListener(this);
+
+
+        ImageIcon iconkeluar = new ImageIcon("gambar/keluar.png");
+        Image img3 = iconkeluar.getImage() ;
+        Image newimg3 = img3.getScaledInstance( 30, 20,  java.awt.Image.SCALE_SMOOTH ) ;
+        iconkeluar = new ImageIcon( newimg3 );
+        btnKeluar = new JButton ("Keluar",iconkeluar);
+        btnKeluar.addActionListener(this);
 
         db =new FormMasuk.koneksi();
 
@@ -118,7 +153,7 @@ public class FormKeluar extends JFrame implements ActionListener {
 
 
 
-        setSize (250,470);
+        setSize (280,520);
         setVisible (true);
         setLocationRelativeTo(null);
     }
@@ -257,15 +292,33 @@ public class FormKeluar extends JFrame implements ActionListener {
         }
     }
 
+    public void playsound(String soundName)
+    {
+        try
+        {
+            AudioInputStream audioInputStream= AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+            Clip clip=AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Error with Playing sound.");
+            ex.printStackTrace();
+        }
+    }
 
 
 
     public void actionPerformed (ActionEvent evt) {
-        if (!"".equals(cari.getText())) {
+        if (!"".equals(cari.getText()))
+        {
 
             tampil();
             tampiltarif();
-
+            playsound("gambar/button.wav");
 
             try {
                 if (evt.getSource() == btnKeluar) {
@@ -274,11 +327,13 @@ public class FormKeluar extends JFrame implements ActionListener {
 
                     total();
                     tampiltotal();
+                    playsound("gambar/button.wav");
 
 
                 }
                 if (evt.getSource() == btnPrint) {
                     try {
+                        playsound("gambar/byebye2.wav");
                         String str = "				Karcis Kendaraan Anda :\n" +
                                 "====================================================================\n\n\n\n" +
                                 "\nNo.Plat   			:  " + cari.getText() + "\n" +
@@ -290,14 +345,7 @@ public class FormKeluar extends JFrame implements ActionListener {
                                 "Terimakasih :)" +
                                 " Semoga selamat sampai tujuan. ";
 
-                        File newTextFile = new File("Karcis - " + cari.getText() + ".txt");
-
-
-                        //File file = fc.getSelectedFile();
-                        //BufferedImage bImage = ImageIO.read(file);
-
-
-                        //ImageIO.write(bImage, "png", new File("Karcis - "+cari.getText()+".png"));
+                        File newTextFile = new File("karcis/Karcis - " + cari.getText() + ".txt");
                         FileWriter fw = new FileWriter(newTextFile);
                         fw.write(str);
                         fw.close();

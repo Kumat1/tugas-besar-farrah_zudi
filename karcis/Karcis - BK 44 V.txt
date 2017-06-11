@@ -1,0 +1,14 @@
+				Karcis Kendaraan Anda :
+====================================================================
+
+
+
+
+No.Plat   			:  BK 44 V
+
+Jenis Kendaraan		:  Mobil
+
+Tarif              	:  3000
+
+Total	            :  15000
+Terimakasih :) Semoga selamat sampai tujuan. 
